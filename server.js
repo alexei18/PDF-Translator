@@ -13,7 +13,7 @@ const { htmlPagesToPdf } = require('./src/htmlToPdf');
 const app = express();
 const upload = multer({
   dest: 'uploads/',
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+  limits: { fileSize: 500 * 1024 * 1024 }, // 500 MB
   fileFilter: (req, file, cb) => {
     if (file.mimetype !== 'application/pdf') {
       return cb(new Error('Only PDF files are allowed'));
@@ -26,7 +26,8 @@ const upload = multer({
 if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ limit: '500mb', extended: true }));
 
 // --- Job store & event emitter ---
 const jobEmitter = new EventEmitter();
