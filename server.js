@@ -126,26 +126,35 @@ async function processTranslation(jobId, pdfPath, targetLanguage, originalName) 
     const pages = await extractPdfData(pdfPath);
     const total = pages.length;
 
-    // Step 2 — Translate each page via Gemini
-    const htmlPages = [];
-    for (let i = 0; i < total; i++) {
-      const pct = Math.round(10 + (i / total) * 75);
-      emitProgress(
-        jobId,
-        'translating',
-        `Translating page ${i + 1} of ${total}…`,
-        pct
-      );
+    // Step 2 — Translate pages in parallel (5 concurrent Gemini requests)
+    const CONCURRENCY = 5;
+    const htmlPages = new Array(total);
+    let nextIdx = 0;
+    let completedCount = 0;
 
-      const html = await generateTranslatedHtml(pages[i], targetLanguage);
-      htmlPages.push({
-        html,
-        widthPx: pages[i].width,
-        heightPx: pages[i].height,
-        widthPt: pages[i].widthPt,
-        heightPt: pages[i].heightPt,
-      });
-    }
+    const worker = async () => {
+      while (true) {
+        const i = nextIdx++;
+        if (i >= total) break;
+        const html = await generateTranslatedHtml(pages[i], targetLanguage);
+        htmlPages[i] = {
+          html,
+          widthPx: pages[i].width,
+          heightPx: pages[i].height,
+          widthPt: pages[i].widthPt,
+          heightPt: pages[i].heightPt,
+        };
+        completedCount++;
+        emitProgress(
+          jobId,
+          'translating',
+          `Translated ${completedCount} of ${total} pages…`,
+          Math.round(10 + (completedCount / total) * 75)
+        );
+      }
+    };
+
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, () => worker()));
 
     // Step 3 — HTML → PDF
     emitProgress(jobId, 'converting', 'Converting to PDF…', 88);
