@@ -18,6 +18,81 @@ async function getBrowser() {
   return browser;
 }
 
+// ── Overflow fitting ──────────────────────────────────────────────────────────
+
+async function isOverflowing(page, heightPx) {
+  return page.evaluate((maxH) => {
+    // Check both scroll height and actual bounding boxes (catches absolute-positioned elements)
+    const scrollH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    if (scrollH > maxH + 2) return true;
+    const allBottoms = Array.from(document.querySelectorAll('*'))
+      .map(el => el.getBoundingClientRect().bottom);
+    return allBottoms.some(b => b > maxH + 2);
+  }, heightPx);
+}
+
+async function fitContentToPage(page, heightPx) {
+  if (!(await isOverflowing(page, heightPx))) return;
+  console.log('[htmlToPdf] Overflow detected — reducing vertical spacing…');
+
+  // Phase 1: reduce vertical margins, paddings, gaps, line-height by 1px per round
+  for (let round = 0; round < 30; round++) {
+    await page.evaluate(() => {
+      document.querySelectorAll('*').forEach(el => {
+        const cs = window.getComputedStyle(el);
+
+        const mt = parseFloat(cs.marginTop);
+        if (mt > 0) el.style.marginTop = `${Math.max(0, mt - 1)}px`;
+
+        const mb = parseFloat(cs.marginBottom);
+        if (mb > 0) el.style.marginBottom = `${Math.max(0, mb - 1)}px`;
+
+        const pt = parseFloat(cs.paddingTop);
+        if (pt > 0) el.style.paddingTop = `${Math.max(0, pt - 1)}px`;
+
+        const pb = parseFloat(cs.paddingBottom);
+        if (pb > 0) el.style.paddingBottom = `${Math.max(0, pb - 1)}px`;
+
+        const rg = parseFloat(cs.rowGap);
+        if (rg > 0) el.style.rowGap = `${Math.max(0, rg - 1)}px`;
+
+        // line-height: only reduce if it has extra breathing room above 1.1× font size
+        const lh = parseFloat(cs.lineHeight);
+        const fs = parseFloat(cs.fontSize);
+        if (!isNaN(lh) && !isNaN(fs) && lh > fs * 1.1) {
+          el.style.lineHeight = `${Math.max(fs, lh - 1)}px`;
+        }
+      });
+    });
+
+    if (!(await isOverflowing(page, heightPx))) {
+      console.log(`[htmlToPdf] Fitted after ${round + 1} spacing round(s).`);
+      return;
+    }
+  }
+
+  console.log('[htmlToPdf] Spacing exhausted — reducing font sizes…');
+
+  // Phase 2: reduce all font sizes by 1px per round
+  for (let round = 0; round < 25; round++) {
+    await page.evaluate(() => {
+      document.querySelectorAll('*').forEach(el => {
+        const fs = parseFloat(window.getComputedStyle(el).fontSize);
+        if (fs > 6) el.style.fontSize = `${fs - 1}px`;
+      });
+    });
+
+    if (!(await isOverflowing(page, heightPx))) {
+      console.log(`[htmlToPdf] Fitted after ${round + 1} font-size reduction round(s).`);
+      return;
+    }
+  }
+
+  console.warn('[htmlToPdf] Warning: content still overflows after all adjustment rounds.');
+}
+
+// ── Main converter ────────────────────────────────────────────────────────────
+
 async function htmlPagesToPdf(htmlPages) {
   const b = await getBrowser();
   const pagePdfs = [];
@@ -30,6 +105,8 @@ async function htmlPagesToPdf(htmlPages) {
       await page.setViewport({ width: widthPx, height: heightPx, deviceScaleFactor: 1 });
 
       await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+      await fitContentToPage(page, heightPx);
 
       // Puppeteer v21 supports px/in/cm/mm but NOT pt — convert points to inches (1pt = 1/72in)
       const pdfBuffer = await page.pdf({

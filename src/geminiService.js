@@ -81,15 +81,20 @@ I am providing you with:
 TASK:
 1. Recreate this page as a single, self-contained HTML document.
 2. Translate all text into **${targetLanguage}**.
-3. **LAYOUT & SPACING**: The HTML must visually match the original layout. 
+3. **LAYOUT & SPACING**: The HTML must visually match the original layout.
    Set the main container to: width: ${width}px; min-height: ${height}px; position: relative; overflow: hidden;
-4. **CRITICAL PREVENT OVERLAPPING**: 
+4. **FONT SIZES — CRITICAL**: You MUST preserve the EXACT font sizes from the original document.
+   - Carefully inspect the PDF and screenshot to determine the precise font size of every text element.
+   - Set an explicit \`font-size\` in CSS (in px) on every text element — headings, body paragraphs, captions, footnotes, labels, table cells, etc.
+   - Do NOT rely on browser defaults, do NOT use relative units like \`em\` or \`rem\` without an explicit base, do NOT round or approximate sizes.
+   - If a heading is 24px in the original, it must be 24px. If body text is 11px, it must be 11px. Precision is required.
+5. **CRITICAL PREVENT OVERLAPPING**:
    - Translated text often changes length. DO NOT use strict fixed \`height\` on text containers. Use \`min-height\` or allow them to expand vertically.
    - Use CSS flexbox (\`display: flex; flex-direction: column; gap: ...\`) for blocks of text that naturally stack, so they push each other down instead of overlapping.
    - Only use strict absolute positioning (\`top\`, \`left\`) for elements that are completely independent.
    - Ensure proper \`line-height\` (e.g. 1.4 or 1.5) so lines of text don't crush each other.
-5. **IMAGES**: There are ${images.length} images on this page. For each image, use an <img> tag. Set its src attribute EXACTLY to "IMAGE_X" where X is the 0-based index of the image (e.g., IMAGE_0, IMAGE_1). Match their visual positions.
-6. Return ONLY the complete HTML code starting with <!DOCTYPE html>. No markdown fences, no explanations.
+6. **IMAGES**: There are ${images.length} images on this page. For each image, use an <img> tag. Set its src attribute EXACTLY to "IMAGE_X" where X is the 0-based index of the image (e.g., IMAGE_0, IMAGE_1). Match their visual positions.
+7. Return ONLY the complete HTML code starting with <!DOCTYPE html>. No markdown fences, no explanations.
 
 RAW TEXT FOR REFERENCE:
 ${rawText}`;
