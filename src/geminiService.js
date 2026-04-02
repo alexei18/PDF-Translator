@@ -99,11 +99,12 @@ TASK:
 RAW TEXT FOR REFERENCE:
 ${rawText}`;
 
-  const parts = [
-    { inlineData: { mimeType: 'application/pdf', data: pagePdfBase64 } },
-    { inlineData: { mimeType: 'image/png', data: pageImage } },
-    { text: prompt }
-  ];
+  const parts = [];
+  if (pagePdfBase64) {
+    parts.push({ inlineData: { mimeType: 'application/pdf', data: pagePdfBase64 } });
+  }
+  parts.push({ inlineData: { mimeType: 'image/png', data: pageImage } });
+  parts.push({ text: prompt });
 
   const contents = [{ role: 'user', parts }];
 

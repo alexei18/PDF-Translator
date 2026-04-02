@@ -102,7 +102,12 @@ async function extractPdfData(pdfPath) {
   const pdf = await pdfjsLib.getDocument({ data, standardFontDataUrl, useSystemFonts: true, disableFontFace: true }).promise;
   const pages = [];
 
-  const pdfDoc = await PDFDocument.load(data);
+  let pdfDoc = null;
+  try {
+    pdfDoc = await PDFDocument.load(data, { ignoreEncryption: true });
+  } catch (e) {
+    console.warn(`[pdfExtractor] pdf-lib could not parse document (${e.message}) — per-page PDF will be omitted, using screenshots only.`);
+  }
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page       = await pdf.getPage(pageNum);
@@ -122,11 +127,17 @@ async function extractPdfData(pdfPath) {
     await page.render({ canvasContext: canvas.getContext('2d'), viewport: renderViewport }).promise;
     const pageImage = (await canvas.encode('png')).toString('base64');
 
-    const singlePageDoc = await PDFDocument.create();
-    const [copiedPage] = await singlePageDoc.copyPages(pdfDoc, [pageNum - 1]);
-    singlePageDoc.addPage(copiedPage);
-    const singlePageBytes = await singlePageDoc.save();
-    const pagePdfBase64 = Buffer.from(singlePageBytes).toString('base64');
+    let pagePdfBase64 = null;
+    if (pdfDoc) {
+      try {
+        const singlePageDoc = await PDFDocument.create();
+        const [copiedPage] = await singlePageDoc.copyPages(pdfDoc, [pageNum - 1]);
+        singlePageDoc.addPage(copiedPage);
+        pagePdfBase64 = Buffer.from(await singlePageDoc.save()).toString('base64');
+      } catch (e) {
+        console.warn(`[pdfExtractor] Could not extract page ${pageNum} as PDF: ${e.message}`);
+      }
+    }
 
     const images = await extractImageRegions(page, viewportPt, renderScale, canvas);
 

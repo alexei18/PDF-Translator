@@ -128,7 +128,7 @@ async function htmlPagesToPdf(htmlPages) {
   const merged = await PDFDocument.create();
 
   for (const buf of pagePdfs) {
-    const doc = await PDFDocument.load(buf);
+    const doc = await PDFDocument.load(buf, { ignoreEncryption: true });
     const indices = doc.getPageIndices();
     const copied = await merged.copyPages(doc, indices);
     copied.forEach((p) => merged.addPage(p));
