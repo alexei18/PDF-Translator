@@ -6,9 +6,13 @@ const { randomUUID } = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const { extractPdfData } = require('./src/pdfExtractor');
-const { generateTranslatedHtml } = require('./src/geminiService');
-const { htmlPagesToPdf } = require('./src/htmlToPdf');
+// Heavy modules loaded lazily (only on first job) to reduce idle memory usage
+let extractPdfData, generateTranslatedHtml, htmlPagesToPdf;
+function loadHeavyModules() {
+  if (!extractPdfData) ({ extractPdfData } = require('./src/pdfExtractor'));
+  if (!generateTranslatedHtml) ({ generateTranslatedHtml } = require('./src/geminiService'));
+  if (!htmlPagesToPdf) ({ htmlPagesToPdf } = require('./src/htmlToPdf'));
+}
 
 const app = express();
 const upload = multer({
@@ -118,6 +122,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 // --- Translation pipeline ---
 
 async function processTranslation(jobId, pdfPath, targetLanguage, originalName) {
+  loadHeavyModules();
   const job = jobs.get(jobId);
   job.originalName = originalName;
 
