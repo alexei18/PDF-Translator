@@ -1,179 +1,524 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF Translator</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>PDF Translator — AI-Powered with Perfect Layout Preservation</title>
+  <meta name="description"
+    content="Translate any PDF while preserving the original layout. Powered by Google Gemini. 20+ languages supported." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="landing.css" />
 </head>
+
 <body>
-  <div class="page">
 
-    <!-- Header -->
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 13H15M9 17H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- ── Scroll progress bar ── -->
+  <div id="scroll-progress"></div>
+
+  <!-- ════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════ -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <svg class="nav-logo-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M9 13H15M9 17H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <span>PDF Translator</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#how" data-i18n="navHow">How it works</a>
+        <a href="#features" data-i18n="navFeatures">Features</a>
+        <a href="#languages" data-i18n="navLangs">Languages</a>
+        <a href="#tech" data-i18n="navTech">Technology</a>
+      </nav>
+
+      <div class="nav-right">
+        <div class="lang-sw" id="langSw">
+          <button data-lang="en" class="active">EN</button>
+          <button data-lang="ro">RO</button>
+          <button data-lang="ru">RU</button>
+        </div>
+        <a href="/app.html" class="nav-cta" data-i18n="navCta">Try Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="grid-bg"></div>
+    </div>
+
+    <div class="container hero-grid">
+
+      <!-- Left: content -->
+      <div class="hero-content">
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+              fill="currentColor" />
           </svg>
-          <span class="logo-text">PDF Translator</span>
-        </div>
-        <span class="badge">Powered by Gemini 2.5 Pro</span>
-      </div>
-    </header>
-
-    <!-- Main content -->
-    <main class="main">
-      <div class="hero">
-        <h1 class="hero-title">Translate any PDF,<br/>preserve every detail</h1>
-        <p class="hero-sub">Layout, fonts, and structure are kept intact — only the language changes.</p>
-      </div>
-
-      <div class="card">
-
-        <!-- Upload area -->
-        <div class="section">
-          <label class="section-label">1 — Upload your PDF</label>
-          <div class="drop-zone" id="dropZone">
-            <input type="file" id="fileInput" accept=".pdf" hidden />
-            <div class="drop-content" id="dropContent">
-              <svg class="drop-icon" viewBox="0 0 24 24" fill="none">
-                <path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 3V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-              <p class="drop-main">Drag &amp; drop your PDF here</p>
-              <p class="drop-sub">or <button class="browse-btn" id="browseBtn">browse files</button></p>
-            </div>
-            <div class="file-selected" id="fileSelected" hidden>
-              <svg class="file-icon" viewBox="0 0 24 24" fill="none">
-                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <div class="file-info">
-                <span class="file-name" id="fileName"></span>
-                <span class="file-size" id="fileSize"></span>
-              </div>
-              <button class="remove-btn" id="removeBtn" title="Remove file">
-                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </button>
-            </div>
-          </div>
+          <span data-i18n="heroBadge">Powered by Gemini</span>
         </div>
 
-        <!-- Language selector -->
-        <div class="section">
-          <label class="section-label" for="langSelect">2 — Choose target language</label>
-          <div class="select-wrapper">
-            <select id="langSelect" class="lang-select">
-              <option value="English">English</option>
-              <option value="Spanish">Spanish — Español</option>
-              <option value="French">French — Français</option>
-              <option value="German">German — Deutsch</option>
-              <option value="Portuguese">Portuguese — Português</option>
-              <option value="Italian">Italian — Italiano</option>
-              <option value="Russian">Russian — Русский</option>
-              <option value="Arabic">Arabic — العربية</option>
-              <option value="Japanese">Japanese — 日本語</option>
-              <option value="Korean">Korean — 한국어</option>
-              <option value="Chinese Simplified">Chinese Simplified — 简体中文</option>
-              <option value="Chinese Traditional">Chinese Traditional — 繁體中文</option>
-              <option value="Hindi">Hindi — हिन्दी</option>
-              <option value="Turkish">Turkish — Türkçe</option>
-              <option value="Dutch">Dutch — Nederlands</option>
-              <option value="Polish">Polish — Polski</option>
-              <option value="Swedish">Swedish — Svenska</option>
-              <option value="Romanian" selected>Romanian — Română</option>
-              <option value="Indonesian">Indonesian — Bahasa Indonesia</option>
-              <option value="Vietnamese">Vietnamese — Tiếng Việt</option>
-            </select>
-            <svg class="select-arrow" viewBox="0 0 24 24" fill="none" width="16" height="16">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
+        <h1 class="hero-title">
+          <span data-i18n="heroTitle">Translate any PDF,</span>
+          <span class="line-2" data-i18n="heroTitle2">preserve every detail</span>
+        </h1>
 
-        <!-- Translate button -->
-        <div class="section section-action">
-          <button class="translate-btn" id="translateBtn" disabled>
+        <p class="hero-desc" data-i18n="heroDesc">
+          AI-powered translation that keeps your document's exact layout, fonts, and structure intact. Upload once,
+          download perfectly.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/app.html" class="btn-primary">
             <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-              <path d="M5 8L10 3H19C20.1 3 21 3.9 21 5V15C21 16.1 20.1 17 19 17H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M3 21L8 16H17C18.1 16 19 15.1 19 14V8C19 6.9 18.1 6 17 6H3C1.9 6 1 6.9 1 8V18C1 19.1 1.9 20 3 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 8L10 3H19C20.1 3 21 3.9 21 5V15C21 16.1 20.1 17 19 17H14" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M3 21L8 16H17C18.1 16 19 15.1 19 14V8C19 6.9 18.1 6 17 6H3C1.9 6 1 6.9 1 8V18C1 19.1 1.9 20 3 20"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <span>Translate PDF</span>
-          </button>
-        </div>
-
-        <!-- Progress -->
-        <div class="section progress-section" id="progressSection" hidden>
-          <div class="progress-steps">
-            <div class="step" id="step-extracting">
-              <div class="step-dot"></div>
-              <span>Extracting</span>
-            </div>
-            <div class="step-line"></div>
-            <div class="step" id="step-translating">
-              <div class="step-dot"></div>
-              <span>Translating</span>
-            </div>
-            <div class="step-line"></div>
-            <div class="step" id="step-converting">
-              <div class="step-dot"></div>
-              <span>Converting</span>
-            </div>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <span class="progress-pct" id="progressPct">0%</span>
-          </div>
-          <p class="progress-msg" id="progressMsg">Starting…</p>
-        </div>
-
-        <!-- Error -->
-        <div class="section error-section" id="errorSection" hidden>
-          <div class="error-box">
-            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M12 8V12M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <span id="errorMsg"></span>
-          </div>
-        </div>
-
-        <!-- Download -->
-        <div class="section download-section" id="downloadSection" hidden>
-          <div class="success-badge">
-            <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-              <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Translation complete
-          </div>
-          <a class="download-btn" id="downloadBtn" href="#" download>
-            <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-              <path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 15V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            Download Translated PDF
+            <span data-i18n="heroCta">Start Translating</span>
           </a>
-          <button class="new-btn" id="newTranslationBtn">Translate another file</button>
+          <a href="#how" class="btn-ghost">
+            <span data-i18n="heroCta2">How it works</span>
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+              <path d="M5 12H19M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </a>
         </div>
-
       </div>
-    </main>
 
-    <footer class="footer">
-      Layout is preserved using Gemini Vision + HTML reconstruction
-    </footer>
+      <!-- Right: animated visual -->
+      <div class="hero-visual">
+        <div class="doc-showcase">
+          <!-- Language chips -->
+          <div class="lc lc-en">EN</div>
+          <div class="lc lc-fr">FR</div>
+          <div class="lc lc-de">DE</div>
+          <div class="lc lc-es">ES</div>
+          <div class="lc lc-ru">RU</div>
+          <div class="lc lc-ja">日本語</div>
+          <div class="lc lc-zh">中文</div>
 
+          <!-- Animated document card -->
+          <div class="doc-card">
+            <div class="doc-bar">
+              <span class="dot dot-r"></span>
+              <span class="dot dot-y"></span>
+              <span class="dot dot-g"></span>
+              <span class="doc-fname">document.pdf</span>
+            </div>
+            <div class="doc-body">
+              <div class="dl accent w-85"></div>
+              <div class="dl w-full"></div>
+              <div class="dl w-85"></div>
+              <div class="dl w-70"></div>
+              <div class="dl gap"></div>
+              <div class="dl img">
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5" />
+                  <circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="dl gap"></div>
+              <div class="dl w-full"></div>
+              <div class="dl w-85"></div>
+              <div class="dl w-55"></div>
+              <div class="dl gap"></div>
+              <div class="dl w-full"></div>
+              <div class="dl w-40"></div>
+            </div>
+          </div>
+
+          <!-- AI spinner -->
+          <div class="ai-spin">
+            <div class="ai-ring-outer"></div>
+            <div class="ai-ring-inner"></div>
+            <div class="ai-center">
+              <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                <path
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="currentColor" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span class="scroll-text" data-i18n="scrollHint">Scroll</span>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     STATS BAND
+════════════════════════════════════════ -->
+  <div class="stats-band">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item reveal">
+          <div class="stat-val"><span class="stat-n" data-count="20">0</span><span class="stat-s">+</span></div>
+          <div class="stat-lbl" data-i18n="statLang">Languages Supported</div>
+        </div>
+        <div class="stat-item reveal d1">
+          <div class="stat-val"><span class="stat-n" data-count="100">0</span><span class="stat-s">%</span></div>
+          <div class="stat-lbl" data-i18n="statLayout">Layout Fidelity</div>
+        </div>
+        <div class="stat-item reveal d2">
+          <div class="stat-val"><span class="stat-n" data-count="3">0</span></div>
+          <div class="stat-lbl" data-i18n="statSteps">Processing Steps</div>
+        </div>
+        <div class="stat-item reveal d3">
+          <div class="stat-val"><span class="stat-n" data-count="500">0</span><span class="stat-s">MB</span></div>
+          <div class="stat-lbl" data-i18n="statSize">Max File Size</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- ════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════ -->
+  <section class="section how-bg" id="how">
+    <div class="container">
+      <div class="s-header reveal">
+        <div class="s-tag" data-i18n="howTag">Process</div>
+        <h2 class="s-title" data-i18n="howTitle">Three steps to a perfect translation</h2>
+        <p class="s-sub" data-i18n="howSub">From upload to download in minutes, with full layout fidelity guaranteed</p>
+      </div>
+      <div class="steps-row">
+        <div class="step-card reveal">
+          <div class="step-num">1</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+              <path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+              <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M12 3V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="step-title" data-i18n="s1Title">Upload your PDF</div>
+          <div class="step-desc" data-i18n="s1Desc">Drag and drop or browse for your PDF document. Supports all standard
+            PDF formats up to 500MB. Multiple pages, complex layouts — all handled automatically.</div>
+        </div>
+        <div class="step-conn">
+          <div class="conn-line"></div>
+        </div>
+        <div class="step-card reveal d1">
+          <div class="step-num">2</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+              <path d="M2 12h3M19 12h3M12 2v3M12 19v3" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+              <path d="M12 7C9.24 7 7 9.24 7 12s2.24 5 5 5" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="step-title" data-i18n="s2Title">Choose target language</div>
+          <div class="step-desc" data-i18n="s2Desc">Select from 20+ languages including Spanish, French, German,
+            Russian, Japanese, Arabic, and more. Our AI understands document context for accurate, nuanced translation.
+          </div>
+        </div>
+        <div class="step-conn">
+          <div class="conn-line"></div>
+        </div>
+        <div class="step-card reveal d2">
+          <div class="step-num">3</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+              <path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+              <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M12 15V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="step-title" data-i18n="s3Title">Download translated PDF</div>
+          <div class="step-desc" data-i18n="s3Desc">Receive your translated PDF with the original layout fully preserved
+            — same columns, same tables, same visual hierarchy. Ready to share or print immediately.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════ -->
+  <section class="section feat-bg" id="features">
+    <div class="container">
+      <div class="s-header reveal">
+        <div class="s-tag" data-i18n="featTag">Features</div>
+        <h2 class="s-title" data-i18n="featTitle">Everything you need, nothing you don't</h2>
+        <p class="s-sub" data-i18n="featSub">Designed for precision, built for speed, optimized for quality</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card highlight reveal">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+              <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8" />
+              <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8" />
+              <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8" />
+              <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8" />
+            </svg>
+          </div>
+          <div class="feat-title" data-i18n="f1Title">Perfect Layout Preservation</div>
+          <div class="feat-desc" data-i18n="f1Desc">Our AI captures a visual screenshot of each page, understanding the
+            complete visual structure — tables, columns, headers, footers, and complex multi-column formatting. The
+            translated PDF looks exactly like the original.</div>
+        </div>
+        <div class="feat-card reveal d1">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="feat-title" data-i18n="f2Title">20+ Languages Supported</div>
+          <div class="feat-desc" data-i18n="f2Desc">Translate between all major world languages: English, Spanish,
+            French, German, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, Hindi, and more. New languages added
+            regularly.</div>
+        </div>
+        <div class="feat-card reveal d2">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="feat-title" data-i18n="f3Title">Gemini Intelligence</div>
+          <div class="feat-desc" data-i18n="f3Desc">Powered by Google's most advanced multimodal AI. It reads your
+            document like a human — understanding context, domain-specific terminology, abbreviations, and nuanced
+            phrasing for translations that feel natural.</div>
+        </div>
+        <div class="feat-card reveal d3">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8" />
+              <path
+                d="M20.19 12a8.16 8.16 0 01-.01 0A8.19 8.19 0 0112 20.19 8.19 8.19 0 013.81 12 8.19 8.19 0 0112 3.81 8.19 8.19 0 0120.19 12z"
+                stroke="currentColor" stroke-width="1.8" />
+            </svg>
+          </div>
+          <div class="feat-title" data-i18n="f4Title">Vision-Based Understanding</div>
+          <div class="feat-desc" data-i18n="f4Desc">Unlike text-only translators, our system captures screenshots of
+            each page for visual context, enabling precise positional understanding of every text element and ensuring
+            pixel-accurate layout reconstruction.</div>
+        </div>
+        <div class="feat-card reveal d4">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+              <path d="M12 2a5 5 0 015 5 5 5 0 01-5 5 5 5 0 01-5-5 5 5 0 015-5z" stroke="currentColor"
+                stroke-width="1.8" />
+              <path d="M15 14H9a7 7 0 00-7 7h20a7 7 0 00-7-7z" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+              <path d="M17 11l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="feat-title" data-i18n="f5Title">No Account Required</div>
+          <div class="feat-desc" data-i18n="f5Desc">Zero friction. Simply upload your PDF and start translating
+            immediately. No registration, no subscriptions, no email required. Files are processed securely and not
+            stored permanently.</div>
+        </div>
+        <div class="feat-card reveal d5">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+              <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M12 12v6M9 15l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="feat-title" data-i18n="f6Title">Large File Support</div>
+          <div class="feat-desc" data-i18n="f6Desc">Handle documents up to 500MB with full multi-page support. Academic
+            papers, legal contracts, technical manuals, financial reports — all processed with the same care and quality
+            regardless of complexity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     LANGUAGES
+════════════════════════════════════════ -->
+  <section class="section lang-bg" id="languages">
+    <div class="container">
+      <div class="s-header reveal">
+        <div class="s-tag" data-i18n="langTag">Coverage</div>
+        <h2 class="s-title" data-i18n="langTitle">Translate to any language</h2>
+        <p class="s-sub" data-i18n="langSub">Support for 20+ major world languages with more being added</p>
+      </div>
+      <div class="lang-grid reveal">
+        <div class="lang-tag"><span class="lf">🇺🇸</span> English <span class="lcode">EN</span></div>
+        <div class="lang-tag"><span class="lf">🇪🇸</span> Español <span class="lcode">ES</span></div>
+        <div class="lang-tag"><span class="lf">🇫🇷</span> Français <span class="lcode">FR</span></div>
+        <div class="lang-tag"><span class="lf">🇩🇪</span> Deutsch <span class="lcode">DE</span></div>
+        <div class="lang-tag"><span class="lf">🇵🇹</span> Português <span class="lcode">PT</span></div>
+        <div class="lang-tag"><span class="lf">🇮🇹</span> Italiano <span class="lcode">IT</span></div>
+        <div class="lang-tag"><span class="lf">🇷🇺</span> Русский <span class="lcode">RU</span></div>
+        <div class="lang-tag"><span class="lf">🇸🇦</span> العربية <span class="lcode">AR</span></div>
+        <div class="lang-tag"><span class="lf">🇯🇵</span> 日本語 <span class="lcode">JA</span></div>
+        <div class="lang-tag"><span class="lf">🇰🇷</span> 한국어 <span class="lcode">KO</span></div>
+        <div class="lang-tag"><span class="lf">🇨🇳</span> 简体中文 <span class="lcode">ZH-S</span></div>
+        <div class="lang-tag"><span class="lf">🇹🇼</span> 繁體中文 <span class="lcode">ZH-T</span></div>
+        <div class="lang-tag"><span class="lf">🇮🇳</span> हिन्दी <span class="lcode">HI</span></div>
+        <div class="lang-tag"><span class="lf">🇹🇷</span> Türkçe <span class="lcode">TR</span></div>
+        <div class="lang-tag"><span class="lf">🇳🇱</span> Nederlands <span class="lcode">NL</span></div>
+        <div class="lang-tag"><span class="lf">🇵🇱</span> Polski <span class="lcode">PL</span></div>
+        <div class="lang-tag"><span class="lf">🇸🇪</span> Svenska <span class="lcode">SV</span></div>
+        <div class="lang-tag"><span class="lf">🇷🇴</span> Română <span class="lcode">RO</span></div>
+        <div class="lang-tag"><span class="lf">🇮🇩</span> Indonesia <span class="lcode">ID</span></div>
+        <div class="lang-tag"><span class="lf">🇻🇳</span> Tiếng Việt <span class="lcode">VI</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     TECHNOLOGY
+════════════════════════════════════════ -->
+  <section class="section tech-bg" id="tech">
+    <div class="container">
+      <div class="s-header reveal">
+        <div class="s-tag" data-i18n="techTag">Stack</div>
+        <h2 class="s-title" data-i18n="techTitle">Built on cutting-edge AI</h2>
+        <p class="s-sub" data-i18n="techSub">A precision-engineered stack that understands documents visually</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card reveal">
+          <div class="tech-logo">G</div>
+          <div class="tech-name" data-i18n="t1Name">Google Gemini</div>
+          <div class="tech-role" data-i18n="t1Role">AI Translation Engine</div>
+          <div class="tech-desc" data-i18n="t1Desc">Google's most advanced multimodal model combines visual document
+            understanding with state-of-the-art translation for exceptional accuracy.</div>
+        </div>
+        <div class="tech-card reveal d1">
+          <div class="tech-logo">PDF</div>
+          <div class="tech-name" data-i18n="t2Name">pdfjs-dist</div>
+          <div class="tech-role" data-i18n="t2Role">PDF Parser</div>
+          <div class="tech-desc" data-i18n="t2Desc">Mozilla's battle-tested PDF parser extracts precise text positions,
+            coordinates, and page structure for faithful element reconstruction.</div>
+        </div>
+        <div class="tech-card reveal d2">
+          <div class="tech-logo">&lt;/&gt;</div>
+          <div class="tech-name" data-i18n="t3Name">HTML Reconstruction</div>
+          <div class="tech-role" data-i18n="t3Role">Layout Engine</div>
+          <div class="tech-desc" data-i18n="t3Desc">Extracted positions reconstructed as pixel-perfect HTML, ensuring
+            translated content occupies exactly the same visual space as the original.</div>
+        </div>
+        <div class="tech-card reveal d3">
+          <div class="tech-logo">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+              <path d="M8 12s1-3 4-3 4 3 4 3-1 3-4 3-4-3-4-3z" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="tech-name" data-i18n="t4Name">Puppeteer + pdf-lib</div>
+          <div class="tech-role" data-i18n="t4Role">PDF Renderer</div>
+          <div class="tech-desc" data-i18n="t4Desc">Chrome-based rendering via Puppeteer for faithful HTML-to-PDF
+            conversion, with pdf-lib merging multi-page results into one seamless document.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FINAL CTA
+════════════════════════════════════════ -->
+  <section class="cta-section">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="container">
+      <div class="cta-inner reveal">
+        <h2 class="cta-title">
+          <span data-i18n="ctaTitle">Ready to translate your</span>
+          <span> PDF?</span>
+        </h2>
+        <p class="cta-sub" data-i18n="ctaSub">
+          Upload your document and experience AI-powered translation that truly preserves your layout. No account
+          needed.
+        </p>
+        <a href="/app.html" class="cta-btn">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M5 8L10 3H19C20.1 3 21 3.9 21 5V15C21 16.1 20.1 17 19 17H14" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 21L8 16H17C18.1 16 19 15.1 19 14V8C19 6.9 18.1 6 17 6H3C1.9 6 1 6.9 1 8V18C1 19.1 1.9 20 3 20"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span data-i18n="ctaBtn">Start Translating Now</span>
+        </a>
+        <span class="cta-note" data-i18n="ctaNote">No account required · Free to use · Secure processing</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="/" class="footer-logo">
+            <svg class="footer-logo-icon" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M9 13H15M9 17H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span>PDF Translator</span>
+          </a>
+          <p class="footer-tagline" data-i18n="footerTagline">AI-powered PDF translation with perfect layout
+            preservation.</p>
+          <p class="footer-tech-note" data-i18n="footerTech">Built with Gemini Vision + HTML reconstruction</p>
+        </div>
+        <div>
+          <div class="footer-nav-title" data-i18n="footerNavTitle">Navigation</div>
+          <div class="footer-nav-list">
+            <a href="/app.html" data-i18n="footerNavApp">Open App</a>
+            <a href="#how" data-i18n="footerNavHow">How it works</a>
+            <a href="#features" data-i18n="footerNavFeat">Features</a>
+            <a href="#languages" data-i18n="footerNavLang">Languages</a>
+            <a href="#tech" data-i18n="footerNavTech">Technology</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-legal" data-i18n="footerLegal">© 2026 PDF Translator. Powered by Google Gemini.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="landing.js"></script>
 </body>
+
 </html>

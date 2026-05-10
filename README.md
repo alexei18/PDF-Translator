@@ -1,13 +1,13 @@
 # PDF Translator
 
-A Node.js application that translates PDF documents while preserving their original layout and formatting using Google Gemini 2.5 Pro AI.
+A Node.js application that translates PDF documents while preserving their original layout and formatting using Google Gemini AI.
 
 ## How It Works
 
 The translation pipeline has three stages:
 
 1. **Extract** — `pdfjs-dist` parses each PDF page, extracting text elements with their exact positions and dimensions. `@napi-rs/canvas` renders a screenshot of each page.
-2. **Translate** — The page screenshot + JSON of text positions are sent to Gemini 2.5 Pro, which returns a full reconstructed HTML page with translated text placed at the original coordinates.
+2. **Translate** — The page screenshot + JSON of text positions are sent to Gemini, which returns a full reconstructed HTML page with translated text placed at the original coordinates.
 3. **Rebuild** — Puppeteer renders the HTML back to a PDF page. `pdf-lib` merges all pages into the final translated document.
 
 ## Project Structure
@@ -17,7 +17,7 @@ PDF-Translator/
 ├── server.js               # Express server, SSE-based progress, job queue
 ├── src/
 │   ├── pdfExtractor.js     # PDF parsing — pdfjs-dist v3 + @napi-rs/canvas
-│   ├── geminiService.js    # Gemini 2.5 Pro API integration
+│   ├── geminiService.js    # Gemini API integration
 │   ├── htmlToPdf.js        # Puppeteer HTML→PDF + pdf-lib page merging
 │   ├── canvas-shim.js      # DOMMatrix + Path2D polyfills for pdfjs-dist v3
 │   └── app.js              # Frontend JS logic
@@ -36,7 +36,7 @@ PDF-Translator/
 | `express` | HTTP server & API routes |
 | `pdfjs-dist` v3.11 | PDF parsing and rendering |
 | `@napi-rs/canvas` | Canvas implementation for pdfjs in Node.js |
-| `@google/generative-ai` | Gemini 2.5 Pro API client |
+| `@google/generative-ai` | Gemini API client |
 | `puppeteer` | Headless Chrome for HTML→PDF conversion |
 | `pdf-lib` | Merging individual page PDFs into one document |
 | `multer` | File upload handling |
